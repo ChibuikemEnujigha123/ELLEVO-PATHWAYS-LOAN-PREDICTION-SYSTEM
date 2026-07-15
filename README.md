@@ -1,89 +1,102 @@
 # ELLEVO-PATHWAYS-LOAN-PREDICTION-SYSTEM
-# 🎓 Student Performance Factors Analysis
+
 
 ## 📌 Project Overview
-This project performs a comprehensive data analysis and visualization of student performance factors using a dataset containing over **6,600 student records**. The analysis explores various academic, personal, and environmental factors that influence student exam scores, providing actionable insights for educators and policymakers.
+This project builds a **machine learning-based Loan Approval Prediction System** that determines whether a loan application should be **Approved** or **Rejected** based on applicant financial and personal information. The system uses three different classification models and provides a user-friendly Streamlit interface for real-time predictions.
 
 ---
 
 ## 📊 Dataset Description
-The dataset `StudentPerformanceFactors.csv` contains **6,607 student records** with **20 features** covering:
+The dataset `loan_approval_dataset.csv` contains **4,269 loan records** with **13 features**:
 
-### **Academic Factors**
-- `Hours_Studied`: Weekly study hours (1–44 hours)
-- `Attendance`: Attendance percentage (60–100%)
-- `Previous_Scores`: Previous exam scores (50–100)
-- `Tutoring_Sessions`: Number of tutoring sessions attended (0–8)
-- `Exam_Score`: Target variable – final exam score (55–101)
+### **Applicant Demographics**
+- `loan_id`: Unique identifier for each loan application
+- `no_of_dependents`: Number of dependents (0–5)
+- `education`: Education level (`Graduate` / `Not Graduate`)
+- `self_employed`: Self-employment status (`Yes` / `No`)
 
-### **Personal & Environmental Factors**
-- `Parental_Involvement`: Level of parental engagement (Low/Medium/High)
-- `Access_to_Resources`: Access to educational resources (Low/Medium/High)
-- `Extracurricular_Activities`: Participation in extracurriculars (Yes/No)
-- `Sleep_Hours`: Daily sleep hours (4–10 hours)
-- `Motivation_Level`: Student motivation level (Low/Medium/High)
-- `Internet_Access`: Internet availability (Yes/No)
-- `Family_Income`: Family income level (Low/Medium/High)
-- `Teacher_Quality`: Teacher quality rating (Low/Medium/High)
-- `School_Type`: Type of school (Public/Private)
-- `Peer_Influence`: Peer influence (Positive/Neutral/Negative)
-- `Physical_Activity`: Weekly physical activity hours (0–6)
-- `Learning_Disabilities`: Learning disability status (Yes/No)
-- `Parental_Education_Level`: Parent education level (categorical)
-- `Distance_from_Home`: Distance from school (Near/Moderate/Far)
-- `Gender`: Student gender (Male/Female)
+### **Financial Information**
+- `income_annum`: Annual income in Naira (₦)
+- `loan_amount`: Requested loan amount in Naira (₦)
+- `loan_term`: Loan repayment period (2–20 months)
+- `cibil_score`: Credit score (300–900)
+
+### **Asset Values**
+- `residential_assets_value`: Residential assets value (₦)
+- `commercial_assets_value`: Commercial assets value (₦)
+- `luxury_assets_value`: Luxury assets value (₦)
+- `bank_asset_value`: Bank assets value (₦)
+
+### **Target Variable**
+- `loan_status`: Loan approval status (`Approved` / `Rejected`)
 
 ---
 
 ## 🧹 Methodology
 
 ### **Data Cleaning**
-- **Missing Values Treatment**: Removed rows with missing values in key columns:
-  - `Teacher_Quality` (78 missing)
-  - `Parental_Education_Level` (90 missing)
-  - `Distance_from_Home` (67 missing)
-- **Final Dataset**: 6,378 clean records
-- **Duplicate Removal**: Identified and removed **1 duplicate row**
+- **Missing Values**: No missing values found in the dataset
+- **Duplicate Removal**: Identified and removed **1 duplicate** row
+- **Outlier Detection**: Used IQR method to identify outliers in asset columns:
+  - `residential_assets_value`: 52 outliers removed
+  - `commercial_assets_value`: 37 outliers removed
+  - `bank_asset_value`: 5 outliers removed
+- **Feature Engineering**: Dropped unnecessary columns (`loan_id`, `self_employed`)
+- **Final Dataset Shape**: 4,264 rows × 11 columns
+
+### **Data Preprocessing**
+1. **Encoding**: One-hot encoded `education` feature
+2. **Label Encoding**: Converted target variable `loan_status` to numerical values
+3. **Feature Scaling**: Standardized features using `StandardScaler`
+4. **Train-Test Split**: 70% training, 30% testing (stratified split)
 
 ---
 
 ## 📈 Summary Statistics
 
-| Metric               | Value  |
-|----------------------|--------|
-| Mean Exam Score      | 67.24  |
-| Mean Study Hours     | 19.98  |
-| Mean Attendance      | 79.98% |
-| Mean Previous Score  | 75.07  |
-| Average Sleep        | 7.03   |
-| Mean Tutoring Sessions | 1.49 |
+| Metric | Value |
+|--------|-------|
+| **Mean Dependents** | 2.50 |
+| **Mean Annual Income** | ₦5.05M |
+| **Mean Loan Amount** | ₦15.12M |
+| **Mean Loan Term** | 10.9 months |
+| **Mean CIBIL Score** | 600.09 |
+| **Mean Residential Assets** | ₦7.46M |
+| **Mean Commercial Assets** | ₦4.97M |
+| **Mean Luxury Assets** | ₦15.11M |
+| **Mean Bank Assets** | ₦4.97M |
+
+---
+
+## 🤖 Models Implemented
+
+| Model | Accuracy | Precision | Recall | F1-Score |
+|-------|----------|-----------|--------|----------|
+| **Logistic Regression** | 93% | 0.91–0.94 | 0.90–0.94 | 0.90–0.94 |
+| **SVM (Linear)** | 94% | 0.91–0.95 | 0.93–0.94 | 0.92–0.95 |
+| **Random Forest** | **98%** | 0.99–1.00 | 0.96–0.99 | 0.98–0.99 |
+
+### **Best Model: Random Forest**
+- **Confusion Matrix**: [[792, 5], [18, 465]]
+- **Key Parameters**: `n_estimators=500`, `random_state=42`
+- **Performance**: Excellent classification with minimal misclassifications
 
 ---
 
 ## 🎨 Key Visualizations
 
-### 1. Exam Score Distribution
-- Histogram with KDE showing the distribution of exam scores:
-  - Most scores cluster between **65–70**
-  - Slight **right-skewed** distribution
-  - KDE overlays smooth density estimation
+### 1. Loan Amount Distribution
+- Histogram with KDE showing loan amount distribution
+- Most loan amounts cluster between ₦5M–₦25M
+- Right-skewed distribution
 
-### 2. Top 10 Study Hours
-- Bar chart showing the most common study hours:
-  - **20 hours/week** is the most frequent (448 students)
-  - **19 hours/week** (425 students)
-  - **21 hours/week** (420 students)
-  - Students typically study **15–24 hours per week**
+### 2. Loan Status Distribution
+- Count of Approved vs Rejected applications
+- Shows class balance in the dataset
 
-### 3. Motivation Level Distribution
-- Pie chart breaking down student motivation:
-  - Clear distribution across **Low / Medium / High** levels
-  - Helps identify motivation patterns in the student population
-
-### 4. Access to Resources
-- Line chart showing the distribution of students by resource access level:
-  - Visualizes educational resource inequality
-  - Shows count of students at each resource level
+### 3. Loan Amount by Status
+- Bar chart comparing average loan amounts for Approved vs Rejected applications
+- Insights into approval patterns based on loan size
 
 ---
 
@@ -92,10 +105,12 @@ The dataset `StudentPerformanceFactors.csv` contains **6,607 student records** w
 | Library | Purpose |
 |---------|---------|
 | **Pandas** | Data manipulation and analysis |
+| **NumPy** | Numerical computing |
 | **Matplotlib** | Basic plotting and visualization |
 | **Seaborn** | Statistical data visualization |
+| **Scikit-learn** | Machine learning models and preprocessing |
+| **Joblib** | Model serialization and export |
+| **Streamlit** | Web application interface |
 | **Jupyter Notebook** | Interactive development environment |
 
 ---
-
-## 📁 Project Structure
